@@ -1,20 +1,37 @@
 import '../model/util/css/GeraGrade.css'
-import React from 'react';
+import React from 'react'
 import Comum from './Comum'
 import Grafos from '../model/util/Grafos'
 import Escolhe from '../model/util/Escolhe'
-
-
-import materias from '../model/db1'
+import { ativas } from '../model/Filtro'
 
 export default class GeraGrade extends React.Component{
 
-	constructor(){
-		super()
-		this.state ={names: [], keys: [], x:[], cr:[], b: 0}
-		this.handleCheck = this.handleCheck.bind(this);
+	constructor(props){
+		super(props)
+		this.cur = props.cur
+		this.state = {names: [], cur: props.cur, keys: [], x:[], cr:[], b: 0}
+		this.handleCheck = this.handleCheck.bind(this)
+		this.tela = this.tela.bind(this)
 	}
 
+	componentDidUpdate(prevProps, prevState) {
+		let a = window.location.href.split("/")[3]
+		if (a !== this.cur && a !== "") {
+			this.cur = a
+			this.arr = ativas(a)
+			this.setState({ names: [], cur: this.cur, keys: [], x: [], cr: [], b: 0 })
+		}
+	}
+
+	inicia() {
+        let a = window.location.href.split("/")[3]
+        if (a !== this.cur && a !== "") {
+			this.cur = a
+			this.arr = ativas(a)
+        }
+	}
+	
 	handleCheck(e) {
 		if(e.target.className === 't_mat'){
 			let per = document.getElementById(e.target.value).getElementsByClassName("check");
@@ -65,7 +82,6 @@ export default class GeraGrade extends React.Component{
 	}
 
 	mudaTela(e, i){
-  		e.preventDefault()
   		this.setState({b : i})
 	}
 
@@ -130,9 +146,10 @@ export default class GeraGrade extends React.Component{
 			)
 	}
 
-	tela(){//
+	tela(){
 		if (this.state.b === 0) {
-			this.m = this.remove([...materias])
+			this.inicia()
+			this.m = this.remove(ativas(this.cur))
 			let as = this.periodo(this.m)
 			this.state.x = []
 			this.cr = this.state.cr.reduce((accumulator,value) => accumulator + value, 0)
@@ -211,17 +228,17 @@ export default class GeraGrade extends React.Component{
   				}
   			}
 
-			const es = new Escolhe(m)
+			const es = new Escolhe(m, this.cur)
 			m = es.exc()
 			m = m.splice(0, m.length > 50? 50: m.length)
-			let b = <input type="submit" value="Voltar" onClick={(e) => this.mudaTela(e, 1)}/>
+			let b = <input type="submit" value="Voltar" onClick={(e) => this.mudaTela(e, 1)} />
 			return( 
-				<Comum materias = {m} tela={2} fun={b} separa={false} g={"ª"} f={" Grade possível"}/>
+				<Comum materias = {m} tela={2} fun={b} cur={this.state.cur} separa={false} g={"ª"} f={" Grade possível"}/>
 
 			)
 		}
 	}
-	render(){
+	render() {
 		return this.tela()
 	}
 }
