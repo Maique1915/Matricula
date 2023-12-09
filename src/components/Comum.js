@@ -29,9 +29,9 @@ class Comum extends React.Component{
 		this.grade()
 		this.passo = [...this.quadros].splice(0, this.quadros.length > 10 ? 10 : this.quadros.length)
 		this.h1 = horarios(this.cur)
-		
-		this.i = 0
 		this.j = 0
+		this.i = 0
+		
 		this.indices(0)
 	}
 
