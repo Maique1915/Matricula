@@ -1,19 +1,27 @@
+// ...existing code...
 <!doctype html>
 <html>
 
 <head>
     <meta charset="utf-8">
     <title>Redirecting…</title>
-    <meta http-equiv="refresh" content="0; url=/" />
+    <meta http-equiv="refresh" content="0; url=/Matricula/" />
     <script>
-        // Redireciona preservando a rota original via hash (ex: /minha/rota -> /#/minha/rota)
+        // Redireciona preservando a rota original via hash (ex: /Matricula/minha/rota -> /Matricula/#/minha/rota)
         (function () {
+            var base = '/Matricula';
             var path = location.pathname + location.search + location.hash;
-            // Se já estivermos na raiz, só vai para index normalmente
+
+            // Remove o prefixo base se presente (quando a página 404 é servida em /Matricula/...)
+            if (path.indexOf(base) === 0) {
+                path = path.slice(base.length);
+            }
+
+            // Se houver rota além da base, preserva-a após o hash
             if (path && path !== '/') {
-                location.replace('/#' + path);
+                location.replace(base + '/#' + path);
             } else {
-                location.replace('/');
+                location.replace(base + '/');
             }
         })();
     </script>
@@ -27,7 +35,8 @@
 </head>
 
 <body>
-    <p>Redirecionando… <a href="/">Clique aqui se não acontecer.</a></p>
+    <p>Redirecionando… <a href="/Matricula/">Clique aqui se não acontecer.</a></p>
 </body>
 
 </html>
+// ...existing code...
